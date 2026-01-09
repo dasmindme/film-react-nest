@@ -17,7 +17,9 @@ import { OrderModule } from './order/order.module';
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGO_URL'),
+        uri:
+          configService.get<string>('DATABASE_URL') ??
+          (configService.get<string>('MONGO_URL') as string),
       }),
     }),
     FilmsModule,

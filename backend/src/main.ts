@@ -1,11 +1,20 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import 'dotenv/config'
+import 'dotenv/config';
+import { AppLogger } from './loggers/app.logger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix("api/afisha");
+  const logger = new AppLogger();
+
+  const app = await NestFactory.create(AppModule, {
+    logger,
+  });
+
+  app.setGlobalPrefix('api/afisha');
   app.enableCors();
-  await app.listen(3000);
+
+  const port = 3000;
+  await app.listen(port);
+  logger.log(`Backend started on http://localhost:${port}/api/afisha`);
 }
 bootstrap();

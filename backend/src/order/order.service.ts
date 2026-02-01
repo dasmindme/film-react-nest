@@ -1,16 +1,15 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { ScheduleItem } from '../films/entities/film.entity';
 import {
   TicketDto,
   OrderFrontendDto,
   OrderResultDto,
   ListResponse,
 } from './dto/order.dto';
-import { FilmsMongoDBRepository } from '../repository/films.mongodb.repository';
+import { FilmsTypeOrmRepository } from '../repository/films.typeorm.repository';
 
 @Injectable()
 export class OrderService {
-  constructor(private readonly filmsRepo: FilmsMongoDBRepository) {}
+  constructor(private readonly filmsRepo: FilmsTypeOrmRepository) {}
 
   async create(order: OrderFrontendDto): Promise<ListResponse<OrderResultDto>> {
     const { email, phone, tickets } = order;
@@ -45,9 +44,12 @@ export class OrderService {
         throw new BadRequestException('Фильм не найден');
       }
 
-      const session: ScheduleItem | undefined = film.schedule.find(
-        (s) => s.id === scheduleId,
-      );
+      const schedule = await this.filmsRepo.getSchedule(filmId);
+      if (!schedule) {
+        throw new BadRequestException('Сеанс не найден');
+      }
+
+      const session = schedule.items.find((s) => s.id === scheduleId);
 
       if (!session) {
         throw new BadRequestException('Сеанс не найден');
@@ -68,7 +70,6 @@ export class OrderService {
       }
 
       session.taken.push(placeKey);
-      await film.save();
 
       results.push({
         id: `${filmId}:${scheduleId}:${placeKey}`,

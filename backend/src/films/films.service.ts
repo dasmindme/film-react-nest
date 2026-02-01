@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { FilmsListResponse, FilmScheduleResponse } from './dto/films.dto';
-import { FilmsMongoDBRepository } from '../repository/films.mongodb.repository';
+import { FilmsTypeOrmRepository } from '../repository/films.typeorm.repository';
 
 @Injectable()
 export class FilmsService {
-  constructor(private readonly filmsRepo: FilmsMongoDBRepository) {}
+  constructor(private readonly filmsRepo: FilmsTypeOrmRepository) {}
 
   async findAll(): Promise<FilmsListResponse> {
     return this.filmsRepo.findAll();

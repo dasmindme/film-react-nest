@@ -10,7 +10,10 @@ import { Schedule } from './schedule.entity';
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        type: 'postgres',
+        type: config.get<'postgres' | 'mysql' | 'mariadb'>(
+          'DATABASE_DRIVER',
+          'postgres',
+        ),
         host: config.get<string>('DATABASE_HOST', 'localhost'),
         port: Number(config.get<string>('DATABASE_PORT', '5432')),
         username: config.get<string>('DATABASE_USERNAME'),

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { plainToInstance } from 'class-transformer';
 
 import { FilmEntity } from '../typeorm/film.entity';
 import { Schedule } from '../typeorm/schedule.entity';
@@ -38,7 +39,7 @@ export class FilmsTypeOrmRepository {
       return null;
     }
 
-    const items: GetScheduleDTO[] = schedules.map((s) => ({
+    const raw = schedules.map((s) => ({
       id: s.id,
       daytime: s.daytime.toISOString(),
       hall: s.hall,
@@ -47,6 +48,10 @@ export class FilmsTypeOrmRepository {
       price: s.price,
       taken: s.taken,
     }));
+
+    const items = plainToInstance(GetScheduleDTO, raw, {
+      excludeExtraneousValues: true,
+    });
 
     return {
       total: items.length,

@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   frontend:
-    image: ghcr.io/your-org/film-frontend:latest
+    image: ghcr.io/dasmindme/film-react-nest/film-frontend:review-2
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -10,7 +10,7 @@ services:
       - frontend-dist:/dist
 
   backend:
-    image: ghcr.io/your-org/film-backend:latest
+    image: ghcr.io/dasmindme/film-react-nest/film-backend:review-2
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -28,7 +28,7 @@ services:
       - app-network
 
   nginx:
-    image: ghcr.io/your-org/film-nginx:latest
+    image: ghcr.io/dasmindme/film-react-nest/film-nginx:review-2
     build:
       context: ./nginx
       dockerfile: Dockerfile

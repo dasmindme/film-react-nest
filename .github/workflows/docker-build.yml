@@ -41,15 +41,15 @@ jobs:
 
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
-        env:
-          VITE_API_URL: http://api.filmservice.students.nomorepartiessbs.ru/api/afisha
-          VITE_CDN_URL: http://filmservice.students.nomorepartiessbs.ru/content/afisha
         with:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
           tags: ${{ steps.meta-frontend.outputs.tags }}
           labels: ${{ steps.meta-frontend.outputs.labels }}
+          build-args: |
+            VITE_API_URL=http://api.filmservice.students.nomorepartiessbs.ru/api/afisha
+            VITE_CDN_URL=http://filmservice.students.nomorepartiessbs.ru/content/afisha
 
       - name: Extract metadata (tags, labels) for backend
         id: meta-backend

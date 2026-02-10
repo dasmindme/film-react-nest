@@ -4,6 +4,14 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
+# Build-time arguments for Vite envs
+ARG VITE_API_URL
+ARG VITE_CDN_URL
+
+# Expose them as environment variables so Vite sees import.meta.env.VITE_*
+ENV VITE_API_URL=${VITE_API_URL}
+ENV VITE_CDN_URL=${VITE_CDN_URL}
+
 COPY package.json package-lock.json ./
 RUN npm ci
 

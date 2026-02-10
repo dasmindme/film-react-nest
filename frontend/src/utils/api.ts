@@ -1,7 +1,14 @@
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 
+import { API_URL, CDN_URL } from './constants';
+
 dayjs.locale('ru-ru');
+
+// eslint-disable-next-line no-console
+console.log('API_URL at runtime:', API_URL);
+// eslint-disable-next-line no-console
+console.log('CDN_URL at runtime:', CDN_URL);
 
 export enum EnumApiMethods {
     POST = 'POST',

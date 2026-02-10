@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  frontend:
+    image: ghcr.io/dasmindme/film-react-nest/film-frontend:review-2
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - frontend-dist:/dist
+
+  backend:
+    image: ghcr.io/dasmindme/film-react-nest/film-backend:review-2
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - LOGGER_MODE=tskv
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_NAME=films
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+
+  nginx:
+    image: ghcr.io/dasmindme/film-react-nest/film-nginx:review-2
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - '80:80'
+    depends_on:
+      - frontend
+      - backend
+    volumes:
+      - frontend-dist:/usr/share/nginx/html
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=films
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@example.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - '8080:80'
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - app-network
+
+volumes:
+  frontend-dist:
+  postgres-data:
+  pgadmin-data:
+
+networks:
+  app-network:
+    driver: bridge

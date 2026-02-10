@@ -1,7 +1,14 @@
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 
+import { API_URL, CDN_URL } from './constants';
+
 dayjs.locale('ru-ru');
+
+// eslint-disable-next-line no-console
+console.log('API_URL at runtime:', API_URL);
+// eslint-disable-next-line no-console
+console.log('CDN_URL at runtime:', CDN_URL);
 
 export enum EnumApiMethods {
     POST = 'POST',
@@ -151,13 +158,14 @@ export class FilmAPI extends Api implements IFilmAPI {
      * Получить список фильмов
      */
     async getFilms(): Promise<Movie[]> {
-        const data = await this._get<ApiListResponse<Movie>>('/films');
-        return data.items.map((item) => ({
-            ...item,
-            image: this.cdn + item.image,
-            cover: this.cdn + item.cover,
-        }));
-    }
+    const data = await this._get<ApiListResponse<Movie>>('/films');
+    return data.items.map((item) => ({
+        ...item,
+        image: this.cdn + item.image,
+        cover: this.cdn + item.cover,
+    }));
+}
+
 
     /**
      * Забронировать билеты

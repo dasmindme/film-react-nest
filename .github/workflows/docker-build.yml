@@ -41,6 +41,9 @@ jobs:
 
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
+        env:
+          VITE_API_URL: http://api.filmservice.students.nomorepartiessbs.ru/api/afisha
+          VITE_CDN_URL: http://filmservice.students.nomorepartiessbs.ru
         with:
           context: ./frontend
           file: ./frontend/Dockerfile
